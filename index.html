@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #table {
+            height: 90vh;
+            width: 100%;
+        }
+
+        body,
+        h1,
+        #start,
+        span {
+            margin: 0;
+            padding: 0
+        }
+
+        body {
+            overflow: hidden;
+            height: 100vh;
+            cursor: url('./hand-303680_640.png') 24 24, auto;
+            ;
+        }
+
+
+
+
+        #openFridge {
+            display: none;
+            position: absolute;
+            height: 90vh;
+            width: 400px;
+        }
+
+        #closedFridge {
+            position: absolute;
+            height: 90vh;
+            width: 250px;
+        }
+
+        #start {
+            height: 50px;
+            width: 100px;
+        }
+
+        header {
+            height: 10vh;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            align-items: center;
+            font-family: cursive;
+        }
+
+        h1 {
+            font-weight: 400;
+            font-size: xx-large;
+        }
+
+        header span {
+            font-size: xx-large;
+        }
+
+        .foodFloor0 {
+            height: 100px;
+            position: absolute;
+            display: none;
+
+        }
+
+        .foodFloor1 {
+            height: 125px;
+            position: absolute;
+            display: none;
+
+        }
+
+        .foodFloor2 {
+            height: 100px;
+            position: absolute;
+            display: none;
+
+        }
+
+        .foodFloor3 {
+            height: 100px;
+            position: absolute;
+            display: none;
+
+        }
+
+        .foodFloor4 {
+            height: 100px;
+            position: absolute;
+            display: none;
+        }
+    </style>
+
+</head>
+
+<body>
+    <header>
+        <h1>Welcome and good cook!</h1>
+        <button id="start">Start</button>
+        <span id="time">Time: 00</span>
+        <span id="score">Score: 00</span>
+    </header>
+
+    <main>
+        <span id="fridgeContainer">
+            <img id="closedFridge" src="closedFridge.jpg" alt="closed fridge">
+            <img id="openFridge" src="openFridge.jpg" alt="open fridge">
+            <img class="foodFloor0 food" id="water" src="./food/water.png" alt="water bottle">
+            <img class="foodFloor0 food" id="cola" src="./food/cola.png" alt="water bottle">
+            <img class="foodFloor1 food" id="biberon" src="./food/biberon.png" alt="water bottle">
+            <img class="foodFloor2 food" id="beer" src="./food/beer.png" alt="water bottle">
+            <img class="foodFloor3 food" id="pinea" src="./food/pinea.png" alt="water bottle">
+            <img class="foodFloor1 food" id="salad" src="./food/salad.png" alt="water bottle">
+            <img class="foodFloor4 food" id="tomato" src="./food/tomato.png" alt="water bottle">
+
+
+
+        </span>
+        <span id="tableContainer">
+            <img id="table" src="table.png" alt="table">
+
+        </span>
+
+
+    </main>
+
+</body>
+
+</html>
+
+<script>
+    let clientWantedFood = ""
+    let clientMessage = ""
+    let clicketFood = ""
+    let clientIsHere = false
+    let lang = "eng"
+
+    function setLang() {
+        if (navigator.languages.indexOf("it") > -1) {
+                lang = "ita"
+            }
+            else if (navigator.languages.indexOf("fr") > -1) {
+                lang = "fra"
+            }
+            else if (navigator.languages.indexOf("id") > -1) {
+                lang = "ind"
+            }
+            else if (navigator.languages.indexOf("pt") > -1) {
+                lang = "por"
+            }
+            else if (navigator.languages.indexOf("es") > -1) {
+                lang = "spa"
+            }
+            else lang = "eng"
+    }
+    setLang()
+    const gameMessages = {
+        0: { // Cliente che vuole piacersi, un po' snob, magari vegano - Ricette "healthy" e un po' ricercate
+            ita: {
+                0: { sentence: "Un'insalata detox con ananas e un filo d'olio, e un biberon.", food: "salad,pinea,oil,water,biberon", exitSentence: "Perfetto, grazie per il servizio impeccabile. Arrivederci." },
+                1: { sentence: "Una mela croccante con un espresso, per un boost di energia chic.", food: "apple,coffee", exitSentence: "Splendido, come sempre. A presto." },
+                2: { sentence: "Un panino gourmet: pane integrale, pomodoro e un tocco di olio extra vergine.", food: "bread,tomato,oil", exitSentence: "Delizioso, un piacere per il palato. Ciao." },
+                3: { sentence: "Un'insalata leggera con pomodoro e ananas, per una silhouette perfetta.", food: "salad,tomato,pinea", exitSentence: "Eccellente, il mio corpo ringrazia. Addio." }
+            },
+            fra: {
+                0: { sentence: "Une salade détox à l'ananas et un filet d'huile, et un biberon .", food: "salad,pinea,oil,water,biberon", exitSentence: "Parfait, merci pour le service impeccable. Au revoir." },
+                1: { sentence: "Une pomme croquante avec un expresso, pour un boost d'énergie chic.", food: "apple,coffee", exitSentence: "Magnifique, comme toujours. À bientôt." },
+                2: { sentence: "Un sandwich gourmet: pain complet, tomate et une touche d'huile d'olive vierge extra.", food: "bread,tomato,oil", exitSentence: "Délicieux, un plaisir pour le palais. Salut." },
+                3: { sentence: "Une salade légère à la tomate et à l'ananas, pour une silouette parfaite.", food: "salad,tomato,pinea", exitSentence: "Excellent, mon corps vous remercie. Adieu." }
+            },
+            por: {
+                0: { sentence: "Uma salada detox com abacaxi e um fio de azeite, e uma mamadeira.", food: "salad,pinea,oil,water,biberon", exitSentence: "Perfeito, obrigado pelo serviço impecável. Adeus." },
+                1: { sentence: "Uma maçã crocante com um expresso, para um impulso de energia chique.", food: "apple,coffee", exitSentence: "Esplêndido, como sempre. Até breve." },
+                2: { sentence: "Um sanduíche gourmet: pão integral, tomate e um toque de azeite extra virgem.", food: "bread,tomato,oil", exitSentence: "Delicioso, um prazer para o paladar. Tchau." },
+                3: { sentence: "Uma salada leve com tomate e abacaxi, para uma silhueta perfeita.", food: "salad,tomato,pinea", exitSentence: "Excelente, meu corpo agradece. Adeus." }
+            },
+            eng: {
+                0: { sentence: "A detox salad with pineapple and a drizzle of oil, and a baby bottle.", food: "salad,pinea,oil,water,biberon", exitSentence: "Perfect, thank you for the impeccable service. Goodbye." },
+                1: { sentence: "A crisp apple with an espresso, for a chic energy boost.", food: "apple,coffee", exitSentence: "Splendid, as always. See you soon." },
+                2: { sentence: "A gourmet sandwich: whole wheat bread, tomato and a touch of extra virgin olive oil.", food: "bread,tomato,oil", exitSentence: "Delicious, a pleasure for the palate. Bye." },
+                3: { sentence: "A light salad with tomato and pineapple, for a perfect silhouette.", food: "salad,tomato,pinea", exitSentence: "Excellent, my body thanks you. Farewell." }
+            },
+            spa: {
+                0: { sentence: "Una ensalada desintoxicante con piña y un chorrito de aceite, y un biberón.", food: "salad,pinea,oil,water,biberon", exitSentence: "Perfecto, gracias por el servicio impecable. Adiós." },
+                1: { sentence: "Una manzana crujiente con un espresso, para un impulso de energía chic.", food: "apple,coffee", exitSentence: "Espléndido, como siempre. Hasta pronto." },
+                2: { sentence: "Un sándwich gourmet: pan integral, tomate y un toque de aceite de oliva virgen extra.", food: "bread,tomato,oil", exitSentence: "Delicioso, un placer para el paladar. Chao." },
+                3: { sentence: "Una ensalada ligera con tomate y piña, para una silueta perfecta.", food: "salad,tomato,pinea", exitSentence: "Excelente, mi cuerpo te agradece. Adiós." }
+            },
+            ind: {
+                0: { sentence: "Salad detoks dengan nanas dan sedikit minyak, serta botol bayi berisi .", food: "salad,pinea,oil,water,biberon", exitSentence: "Sempurna, terima kasih atas layanan yang sempurna. Sampai jumpa." },
+                1: { sentence: "Apel renyah dengan espresso, untuk dorongan energi yang chic.", food: "apple,coffee", exitSentence: "Luar biasa, seperti biasa. Sampai jumpa lagi." },
+                2: { sentence: "Roti lapis gourmet: roti gandum utuh, tomat, dan sedikit minyak zaitun extra virgin.", food: "bread,tomato,oil", exitSentence: "Lezat, menyenangkan bagi lidah. Dadah." },
+                3: { sentence: "Salad ringan dengan tomat dan nanas, untuk siluet yang sempurna.", food: "salad,tomato,pinea", exitSentence: "Sempurna, tubuh saya berterima kasih. Selamat tinggal." }
+            }
+        },
+        1: { // Cliente un po' matto - Combinazioni strane e riferimenti al "biberon"
+            ita: {
+                0: { sentence: "Vorrei un 'succo di vita' nel biberon: mela, ananas e una goccia di olio cosmico!", food: "apple,pinea,oil,biberon", exitSentence: "Grazie, ora posso volare via! Biberon alla mano, addio!" },
+                1: { sentence: "Fai bollire la birra con un pezzo di pane, e servilo nel biberon! È la pozione magica!", food: "beer,bread,biberon", exitSentence: "La pozione ha fatto effetto! Il biberon è vuoto! Ciao, mondo!" },
+                2: { sentence: "Un'insalata che parla: pomodoro, ananas e un biberon di acqua che ride!", food: "salad,tomato,pinea,water,biberon", exitSentence: "L'insalata ha finito di parlare, l'acqua ha smesso di ridere! È ora di andare! Addio, amici invisibili!" },
+                3: { sentence: "Il caffè dei sogni: un sorso di caffè e poi bevi dal biberon, ti porta via!", food: "coffee,biberon", exitSentence: "Sono nel paese dei sogni, grazie al biberon! Addio, realtà!" }
+            },
+            fra: {
+                0: { sentence: "Je voudrais un 'jus de vie' dans le biberon: pomme, ananas et une goutte d'huile cosmique!", food: "apple,pinea,oil,biberon", exitSentence: "Merci, maintenant je peux m'envoler! Biberon en main, adieu!" },
+                1: { sentence: "Fais bouillir la bière avec un morceau de pain, et sers-le dans le biberon! C'est la potion magique!", food: "beer,bread,biberon", exitSentence: "La potion a fait son effet! Le biberon est vide! Salut, monde!" },
+                2: { sentence: "Une salade qui parle: tomate, ananas et un biberon d'eau qui rit!", food: "salad,tomato,pinea,water,biberon", exitSentence: "La salade a fini de parler, l'eau a arrêté de rire! Il est temps de partir! Adieu, amis invisibles!" },
+                3: { sentence: "Le café des rêves: une gorgée de café et ensuite bois au biberon, ça t'emporte!", food: "coffee,biberon", exitSentence: "Je suis au pays des rêves, grâce au biberon! Adieu, réalité!" }
+            },
+            por: {
+                0: { sentence: "Gostaria de um 'suco de vida' na mamadeira: maçã, abacaxi e uma gota de azeite cósmico!", food: "apple,pinea,oil,biberon", exitSentence: "Obrigado, agora posso voar! Mamadeira na mão, adeus!" },
+                1: { sentence: "Ferva a cerveja com um pedaço de pão, e sirva na mamadeira! É a poção mágica!", food: "beer,bread,biberon", exitSentence: "A poção fez efeito! A mamadeira está vazia! Tchau, mundo!" },
+                2: { sentence: "Uma salada que fala: tomate, abacaxi e uma mamadeira de água que ri!", food: "salad,tomato,pinea,water,biberon", exitSentence: "A salada parou de falar, a água parou de rir! É hora de ir! Adeus, amigos invisíveis!" },
+                3: { sentence: "O café dos sonhos: um gole de café e depois beba na mamadeira, isso te leva embora!", food: "coffee,biberon", exitSentence: "Estou no país dos sonhos, graças à mamadeira! Adeus, realidade!" }
+            },
+            eng: {
+                0: { sentence: "I would like a 'life juice' in the baby bottle: apple, pineapple and a drop of cosmic oil!", food: "apple,pinea,oil,biberon", exitSentence: "Thanks, now I can fly away! Baby bottle in hand, goodbye!" },
+                1: { sentence: "Boil the beer with a piece of bread, and serve it in the baby bottle! It's the magic potion!", food: "beer,bread,biberon", exitSentence: "The potion worked! The baby bottle is empty! Bye, world!" },
+                2: { sentence: "A talking salad: tomato, pineapple and a baby bottle of laughing water!", food: "salad,tomato,pinea,water,biberon", exitSentence: "The salad stopped talking, the water stopped laughing! Time to go! Farewell, invisible friends!" },
+                3: { sentence: "The coffee of dreams: a sip of coffee and then drink from the baby bottle, it takes you away!", food: "coffee,biberon", exitSentence: "I'm in dreamland, thanks to the baby bottle! Goodbye, reality!" }
+            },
+            spa: {
+                0: { sentence: "Quiero un 'jugo de vida' en el biberón: manzana, piña y una gota de aceite cósmico!", food: "apple,pinea,oil,biberon", exitSentence: "Gracias, ¡ahora puedo volar! Biberón en mano, ¡adiós!" },
+                1: { sentence: "Hierve la cerveza con un trozo de pan, ¡y sírvelo en el biberón! ¡Es la poción mágica!", food: "beer,bread,biberon", exitSentence: "¡La poción hizo efecto! ¡El biberón está vacío! ¡Adiós, mundo!" },
+                2: { sentence: "Una ensalada que habla: tomate, piña y un biberón de agua que ríe!", food: "salad,tomato,pinea,water,biberon", exitSentence: "¡La ensalada dejó de hablar, el agua dejó de reír! ¡Es hora de irse! ¡Adiós, amigos invisibles!" },
+                3: { sentence: "El café de los sueños: un sorbo de café y luego bebe del biberón, ¡te lleva lejos!", food: "coffee,biberon", exitSentence: "¡Estoy en el país de los sueños, gracias al biberón! ¡Adiós, realidad!" }
+            },
+            ind: {
+                0: { sentence: "Saya mau 'jus kehidupan' di botol bayi: apel, nanas, dan setetes minyak kosmik!", food: "apple,pinea,oil,biberon", exitSentence: "Terima kasih, sekarang saya bisa terbang! Botol bayi di tangan, selamat tinggal!" },
+                1: { sentence: "Rebus bir dengan sepotong roti, dan sajikan di botol bayi! Ini ramuan ajaib!", food: "beer,bread,biberon", exitSentence: "Ramuan ini berhasil! Botol bayinya kosong! Dadah, dunia!" },
+                2: { sentence: "Salad yang berbicara: tomat, nanas, dan botol bayi berisi air yang tertawa!", food: "salad,tomato,pinea,water,biberon", exitSentence: "Saladnya sudah selesai berbicara, airnya sudah berhenti tertawa! Saatnya pergi! Selamat tinggal, teman-teman tak terlihat!" },
+                3: { sentence: "Kopi impian: seteguk kopi lalu minum dari botol bayi, ini membawamu pergi!", food: "coffee,biberon", exitSentence: "Saya di alam mimpi, terima kasih botol bayi! Selamat tinggal, kenyataan!" }
+            }
+        },
+        2: { // Cliente normale - Ricette semplici ma con un tocco di originalità (sempre usando gli ingredienti)
+            ita: {
+                0: { sentence: "Un panino con pomodoro e olio, ma tosta un po' il pane per favore.", food: "bread,tomato,oil", exitSentence: "Grazie, era buono. Ci vediamo." },
+                1: { sentence: "Una mela, ma vorrei anche un bicchiere di acqua frizzante.", food: "apple,water", exitSentence: "Tutto a posto, grazie. Arrivederci." },
+                2: { sentence: "Un caffè, e magari un piccolo pezzo di pane da inzuppare.", food: "coffee,bread", exitSentence: "Perfetto, grazie. A presto." },
+                3: { sentence: "Una birra, e se possibile, un po' di ananas a lato.", food: "beer,pinea", exitSentence: "Grazie mille. Buona giornata." }
+            },
+            fra: {
+                0: { sentence: "Un sandwich à la tomate et à l'huile, mais grille un peu le pain s'il te plaît.", food: "bread,tomato,oil", exitSentence: "Merci, c'était bon. À plus." },
+                1: { sentence: "Une pomme, mais je voudrais aussi un verre d'eau gazeuse.", food: "apple,water", exitSentence: "Tout est bon, merci. Au revoir." },
+                2: { sentence: "Un café, et peut-être un petit morceau de pain à tremper.", food: "coffee,bread", exitSentence: "Parfait, merci. À bientôt." },
+                3: { sentence: "Une bière, et si possible, un peu d'ananas à côté.", food: "beer,pinea", exitSentence: "Merci beaucoup. Bonne journée." }
+            },
+            por: {
+                0: { sentence: "Um sanduíche com tomate e azeite, mas toste um pouco o pão por favor.", food: "bread,tomato,oil", exitSentence: "Obrigado, estava bom. Até mais." },
+                1: { sentence: "Uma maçã, mas também gostaria de um copo de água com gás.", food: "apple,water", exitSentence: "Tudo bem, obrigado. Adeus." },
+                2: { sentence: "Um café, e talvez um pequeno pedaço de pão para molhar.", food: "coffee,bread", exitSentence: "Perfeito, obrigado. Até breve." },
+                3: { sentence: "Uma cerveja, e se possível, um pouco de abacaxi ao lado.", food: "beer,pinea", exitSentence: "Muito obrigado. Bom dia." }
+            },
+            eng: {
+                0: { sentence: "A sandwich with tomato and oil, but toast the bread a little please.", food: "bread,tomato,oil", exitSentence: "Thanks, that was good. See you around." },
+                1: { sentence: "An apple, but I'd also like a glass of sparkling water.", food: "apple,water", exitSentence: "All good, thanks. Goodbye." },
+                2: { sentence: "A coffee, and maybe a small piece of bread to dip.", food: "coffee,bread", exitSentence: "Perfect, thanks. See you soon." },
+                3: { sentence: "A beer, and if possible, a little pineapple on the side.", food: "beer,pinea", exitSentence: "Thanks a lot. Have a good day." }
+            },
+            spa: {
+                0: { sentence: "Un sándwich de tomate y aceite, pero tuesta un poco el pan por favor.", food: "bread,tomato,oil", exitSentence: "Gracias, estaba bueno. Nos vemos." },
+                1: { sentence: "Una manzana, pero también me gustaría un vaso de agua con gas.", food: "apple,water", exitSentence: "Todo bien, gracias. Adiós." },
+                2: { sentence: "Un café, y quizás un pequeño trozo de pan para mojar.", food: "coffee,bread", exitSentence: "Perfecto, gracias. Hasta pronto." },
+                3: { sentence: "Una cerveza, y si es posible, un poco de piña al lado.", food: "beer,pinea", exitSentence: "Muchas gracias. Buen día." }
+            },
+            ind: {
+                0: { sentence: "Roti lapis dengan tomat dan minyak, tapi tolong panggang rotinya sedikit.", food: "bread,tomato,oil", exitSentence: "Terima kasih, itu enak. Sampai jumpa." },
+                1: { sentence: "Sebuah apel, tapi saya juga ingin segelas air berkarbonasi.", food: "apple,water", exitSentence: "Oke, terima kasih. Selamat tinggal." },
+                2: { sentence: "Kopi, dan mungkin sepotong kecil roti untuk dicelupkan.", food: "coffee,bread", exitSentence: "Sempurna, terima kasih. Sampai jumpa lagi." },
+                3: { sentence: "Bir, dan jika memungkinkan, sedikit nanas di sampingnya.", food: "beer,pinea", exitSentence: "Terima kasih banyak. Semoga harimu menyenangkan." }
+            }
+        },
+        3: { // Cliente che vuole ricette complesse e innovative (con gli ingredienti disponibili)
+            ita: {
+                0: { sentence: "Creazione culinaria! Un'insalata liquida di pomodoro e ananas con una spruzzata di olio e un bicchiere di cola a parte.", food: "salad,tomato,pinea,oil,cola", exitSentence: "Interessante combinazione. Ci si rivede per nuove sperimentazioni!" },
+                1: { sentence: "Un 'cocktail' insolito: birra, caffè e un pezzo di mela galleggiante.", food: "beer,coffee,apple", exitSentence: "Un'esperienza sensoriale unica. Grazie e arrivederci all'insegna dell'innovazione!" },
+                2: { sentence: "Pane fritto nell'olio con pomodoro e ananas caramellato, servito con acqua.", food: "bread,oil,tomato,pinea,water", exitSentence: "Texture sorprendenti e sapori audaci. Tornerò per osare ancora. Ciao!" },
+                3: { sentence: "Una 'salsa' di ananas e pomodoro con un tocco di olio, da gustare con il pane.", food: "pinea,tomato,oil,bread", exitSentence: "Un'interpretazione geniale. Alla prossima creazione culinaria!" }
+            },
+            fra: {
+                0: { sentence: "Création culinaire! Une salade liquide de tomate et d'ananas avec une touche d'huile et un verre de cola à côté.", food: "salad,tomato,pinea,oil,cola", exitSentence: "Combinaison intéressante. À bientôt pour de nouvelles expérimentations!" },
+                1: { sentence: "Un 'cocktail' insolite: bière, café et un morceau de pomme flottante.", food: "beer,coffee,apple", exitSentence: "Une expérience sensorielle unique. Merci et au revoir sous le signe de l'innovation!" },
+                2: { sentence: "Pain frit dans l'huile avec tomate et ananas caramélisé, servi avec de l'eau.", food: "bread,oil,tomato,pinea,water", exitSentence: "Textures surprenantes et saveurs audacieuses. Je reviendrai pour oser encore. Salut!" },
+                3: { sentence: "Une 'sauce' d'ananas et de tomate avec un touche d'huile, à déguster avec le pain.", food: "pinea,tomato,oil,bread", exitSentence: "Une interprétation géniale. À la prochaine création culinaire!" }
+            },
+            por: {
+                0: { sentence: "Criação culinária! Uma salada líquida de tomate e abacaxi com um toque de azeite e um copo de cola à parte.", food: "salad,tomato,pinea,oil,cola", exitSentence: "Combinação interessante. Até mais para novas experimentações!" },
+                1: { sentence: "Um 'coquetel' inusitado: cerveja, café e um pedaço de maçã flutuante.", food: "beer,coffee,apple", exitSentence: "Uma experiência sensorial única. Obrigado e adeus em nome da inovação!" },
+                2: { sentence: "Pão frito no azeite com tomate e abacaxi caramelizado, servido com água.", food: "bread,oil,tomato,pinea,water", exitSentence: "Texturas surpreendentes e sabores audaciosos. Voltarei para ousar mais. Tchau!" },
+                3: { sentence: "Um 'molho' de abacaxi e tomate com um toque de azeite, para saborear com o pão.", food: "pinea,tomato,oil,bread", exitSentence: "Uma interpretação genial. Até a próxima criação culinária!" }
+            },
+            eng: {
+                0: { sentence: "Culinary creation! A liquid salad of tomato and pineapple with a splash of oil and a glass of cola on the side.", food: "salad,tomato,pinea,oil,cola", exitSentence: "Interesting combination. See you again for new experiments!" },
+                1: { sentence: "An unusual 'cocktail': beer, coffee and a floating piece of apple.", food: "beer,coffee,apple", exitSentence: "A unique sensory experience. Thank you and goodbye in the name of innovation!" },
+                2: { sentence: "Bread fried in oil with tomato and caramelized pineapple, served with water.", food: "bread,oil,tomato,pinea,water", exitSentence: "Surprising textures and bold flavors. I'll be back to dare more. Bye!" },
+                3: { sentence: "A 'sauce' of pineapple and tomato with a touch of oil, to enjoy with the bread.", food: "pinea,tomato,oil,bread", exitSentence: "A brilliant interpretation. Until the next culinary creation!" }
+            },
+            spa: {
+                0: { sentence: "¡Creación culinaria! Una ensalada líquida de tomate y piña con un toque de aceite y un vaso de cola aparte.", food: "salad,tomato,pinea,oil,cola", exitSentence: "Combinación interesante. ¡Nos vemos para nuevas experimentaciones!" },
+                1: { sentence: "Un 'cóctel' inusual: cerveza, café y un trozo de manzana flotante.", food: "beer,coffee,apple", exitSentence: "Una experiencia sensorial única. ¡Gracias y adiós en nombre de la innovación!" },
+                2: { sentence: "Pan frito en aceite con tomate y piña caramelizada, servido con agua.", food: "bread,oil,tomato,pinea,water", exitSentence: "Texturas sorprendentes y sabores audaces. Volveré para atreverme más. ¡Chao!" },
+                3: { sentence: "Una 'salsa' de piña y tomate con un toque de aceite, para disfrutar con el pan.", food: "pinea,tomato,oil,bread", exitSentence: "Una interpretación genial. ¡Hasta la próxima creación culinaria!" }
+            },
+            ind: {
+                0: { sentence: "Kreasi kuliner! Salad cair tomat dan nanas dengan percikan minyak dan segelas cola di samping.", food: "salad,tomato,pinea,oil,cola", exitSentence: "Kombinasi yang menarik. Sampai jumpa untuk eksperimen baru!" },
+                1: { sentence: "'Koktail' yang tidak biasa: bir, kopi, dan sepotong apel yang mengambang.", food: "beer,coffee,apple", exitSentence: "Pengalaman sensorik yang unik. Terima kasih dan selamat tinggal demi inovasi!" },
+                2: { sentence: "Roti goreng minyak dengan tomat dan nanas karamel, disajikan dengan air.", food: "bread,oil,tomato,pinea,water", exitSentence: "Tekstur yang mengejutkan dan rasa yang berani. Saya akan kembali untuk mencoba lagi. Dadah!" },
+                3: { sentence: "'Saus' nanas dan tomat dengan sedikit minyak, untuk dinikmati bersama roti.", food: "pinea,tomato,oil,bread", exitSentence: "Interpretasi yang brilian. Sampai kreasi kuliner berikutnya!" }
+            }
+        },
+        4: { // Cliente che vuole solo attaccare briga (provoca) - Le frasi rimangono provocatorie
+            ita: {
+                0: { sentence: "Questo posto è una barzelletta.", food: "", exitSentence: "Era ora di andarsene da questo cesso. Addio!" },
+                1: { sentence: "Non so perché perdo tempo qui.", food: "", exitSentence: "Finalmente me ne vado da questo buco. Ciao!" },
+                2: { sentence: "C'è qualcosa che non va in te?", food: "", exitSentence: "Non perdo altro tempo con te. Sparisco!" },
+                3: { sentence: "Mi stai prendendo in giro?", food: "", exitSentence: "Questa è l'ultima volta che mi vedi qui. Arrivederci!" }
+            },
+            fra: {
+                0: { sentence: "Cet endroit est une blague.", food: "", exitSentence: "Il était temps de partir de ce trou. Adieu!" },
+                1: { sentence: "Je ne sais pas pourquoi je perds mon temps ici.", food: "", exitSentence: "Enfin je pars de ce taudis. Salut!" },
+                2: { sentence: "Il y a quelque chose qui ne va pas chez toi?", food: "", exitSentence: "Je ne perds pas plus de temps avec toi. Je disparais!" },
+                3: { sentence: "Tu te moques de moi?", food: "", exitSentence: "C'est la dernière fois que tu me vois ici. Au revoir!" }
+            },
+            por: {
+                0: { sentence: "Este lugar é uma piada.", food: "", exitSentence: "Já era hora de sair deste lixo. Adeus!" },
+                1: { sentence: "Não sei por que estou perdendo tempo aqui.", food: "", exitSentence: "Finalmente estou saindo deste buraco. Tchau!" },
+                2: { sentence: "Há algo de errado com você?", food: "", exitSentence: "Não vou perder mais tempo com você. Desapareço!" },
+                3: { sentence: "Você está zombando de mim?", food: "", exitSentence: "Esta é a última vez que você me vê aqui. Adeus!" }
+            },
+            eng: {
+                0: { sentence: "This place is a joke.", food: "", exitSentence: "It was time to leave this dump. Goodbye!" },
+                1: { sentence: "I don't know why I'm wasting my time here.", food: "", exitSentence: "Finally leaving this hole. Bye!" },
+                2: { sentence: "Is there something wrong with you?", food: "", exitSentence: "Not wasting any more time with you. I'm out!" },
+                3: { sentence: "Are you making fun of me?", food: "", exitSentence: "This is the last time you'll see me here. Farewell!" }
+            },
+            spa: {
+                0: { sentence: "Este lugar es una broma.", food: "", exitSentence: "Ya era hora de irse de este basurero. ¡Adiós!" },
+                1: { sentence: "No sé por qué pierdo el tiempo aquí.", food: "", exitSentence: "Finalmente me voy de este agujero. ¡Chao!" },
+                2: { sentence: "¿Hay algo malo contigo?", food: "", exitSentence: "No pierdo más tiempo contigo. ¡Desaparezco!" },
+                3: { sentence: "¿Te estás burlando de mí?", food: "", exitSentence: "Esta es la última vez que me ves aquí. ¡Adiós!" }
+            },
+            ind: {
+                0: { sentence: "Tempat ini lelucon.", food: "", exitSentence: "Sudah saatnya pergi dari tempat sampah ini. Selamat tinggal!" },
+                1: { sentence: "Saya tidak tahu mengapa saya membuang waktu di sini.", food: "", exitSentence: "Akhirnya saya pergi dari lubang ini. Dadah!" },
+                2: { sentence: "Apakah ada yang salah dengan Anda?", food: "", exitSentence: "Tidak membuang waktu lagi denganmu. Saya pergi!" },
+                3: { sentence: "Apakah Anda mengolok-olok saya?", food: "", exitSentence: "Ini terakhir kalinya Anda melihat saya di sini. Selamat tinggal!" }
+            }
+        },
+        5: { // Cliente indeciso - Domande e richieste vaghe
+            ita: {
+                0: { sentence: "Qualcosa di... rinfrescante? Forse con un po' di frutta?", food: "", exitSentence: "Mmmh... non lo so... forse vado a pensarci altrove. Ciao." },
+                1: { sentence: "Sono confuso... un caffè o qualcosa di freddo?", food: "", exitSentence: "Ancora non sono sicuro... magari torno dopo. Arrivederci." },
+                2: { sentence: "Cosa si abbina bene con il pane? Un po' di pomodoro forse?", food: "", exitSentence: "Non lo so... forse non ho tanta fame. Addio." },
+                3: { sentence: "Ho bisogno di qualcosa che mi tiri su... ma non troppo forte.", food: "", exitSentence: "Ci devo riflettere... forse altrove. A presto." }
+            },
+            fra: {
+                0: { sentence: "Quelque chose de... rafraîchissant? Peut-être avec un peu de fruits?", food: "", exitSentence: "Mmmh... je ne sais pas... peut-être que je vais y réfléchir ailleurs. Salut." },
+                1: { sentence: "Je suis confus... un café ou quelque chose de froid?", food: "", exitSentence: "Je ne suis toujours pas sûr... peut-être que je reviens plus tard. Au revoir." },
+                2: { sentence: "Qu'est-ce qui va bien avec le pain? Un peu de tomate peut-être?", food: "", exitSentence: "Je ne sais pas... peut-être que je n'ai pas très faim. Adieu." },
+                3: { sentence: "J'ai besoin de quelque chose pour me remonter le moral... mais pas trop fort.", food: "", exitSentence: "Je dois y penser... peut-être ailleurs. À bientôt." }
+            },
+            por: {
+                0: { sentence: "Algo... refrescante? Talvez com um pouco de fruta?", food: "", exitSentence: "Mmmh... não sei... talvez eu vá pensar nisso em outro lugar. Tchau." },
+                1: { sentence: "Estou confuso... um café ou algo frio?", food: "", exitSentence: "Ainda não tenho certeza... talvez eu volte depois. Adeus." },
+                2: { sentence: "O que combina bem com pão? Um pouco de tomate talvez?", food: "", exitSentence: "Não sei... talvez eu não esteja com tanta fome. Adeus." },
+                3: { sentence: "Preciso de algo que me anime... mas não muito forte.", food: "", exitSentence: "Preciso pensar... talvez em outro lugar. Até breve." }
+            },
+            eng: {
+                0: { sentence: "Something... refreshing? Maybe with some fruit?", food: "", exitSentence: "Mmmh... I don't know... maybe I'll go think about it elsewhere. Bye." },
+                1: { sentence: "I'm confused... coffee or something cold?", food: "", exitSentence: "Still not sure... maybe I'll come back later. Goodbye." },
+                2: { sentence: "What goes well with bread? Some tomato perhaps?", food: "", exitSentence: "I don't know... maybe I'm not that hungry. Farewell." },
+                3: { sentence: "I need something to cheer me up... but not too strong.", food: "", exitSentence: "I need to think about it... maybe elsewhere. See you soon." }
+            },
+            spa: {
+                0: { sentence: "Algo... ¿refrescante? ¿Quizás con un poco de fruta?", food: "", exitSentence: "Mmmh... no sé... quizás vaya a pensarlo a otro lado. Chao." },
+                1: { sentence: "Estoy confundido... ¿café o algo frío?", food: "", exitSentence: "Todavía no estoy seguro... quizás vuelva más tarde. Adiós." },
+                2: { sentence: "¿Qué combina bien con el pan? ¿Un poco de tomate quizás?", food: "", exitSentence: "No sé... quizás no tenga tanta hambre. Adiós." },
+                3: { sentence: "Necesito algo que me anime... pero no demasiado fuerte.", food: "", exitSentence: "Tengo que reflexionarlo... quizás en otro lugar. Hasta pronto." }
+            },
+            ind: {
+                0: { sentence: "Sesuatu yang... menyegarkan? Mungkin dengan sedikit buah?", food: "", exitSentence: "Mmmh... saya tidak tahu... mungkin saya akan memikirkannya di tempat lain. Dadah." },
+                1: { sentence: "Saya bingung... kopi atau sesuatu yang dingin?", food: "", exitSentence: "Masih belum yakin... mungkin saya akan kembali nanti. Selamat tinggal." },
+                2: { sentence: "Apa yang cocok dengan roti? Mungkin sedikit tomat?", food: "", exitSentence: "Saya tidak tahu... mungkin saya tidak terlalu lapar. Selamat tinggal." },
+                3: { sentence: "Saya butuh sesuatu untuk menyemangati saya... tapi tidak terlalu kuat.", food: "", exitSentence: "Saya harus memikirkannya... mungkin di tempat lain. Sampai jumpa lagi." }
+            }
+        },
+        6: { // Cliente che ha fretta - Richieste rapide e dirette
+            ita: {
+                0: { sentence: "Un caffè, subito! E una mela per la corsa!", food: "coffee,apple", exitSentence: "Grazie, vado! Non ho tempo da perdere! Ciao!" },
+                1: { sentence: "Veloce! Un panino con pomodoro e olio!", food: "bread,tomato,oil", exitSentence: "Perfetto, via! La fretta mi chiama! Arrivederci!" },
+                2: { sentence: "Acqua e ananas, in fretta!", food: "water,pinea", exitSentence: "Grazie, devo andare! Il tempo è denaro! Addio!" },
+                3: { sentence: "Una birra, al volo!", food: "beer", exitSentence: "Grazie, scappo! Ci vediamo in giro! A presto!" }
+            },
+            fra: {
+                0: { sentence: "Un café, tout de suite! Et une pomme pour la course!", food: "coffee,apple", exitSentence: "Merci, j'y vais! Je n'ai pas de temps à perdre! Salut!" },
+                1: { sentence: "Vite! Un sandwich à la tomate et à l'huile!", food: "bread,tomato,oil", exitSentence: "Parfait, en route! La hâte m'appelle! Au revoir!" },
+                2: { sentence: "De l'eau et de l'ananas, vite!", food: "water,pinea", exitSentence: "Merci, je dois partir! Le temps, c'est de l'argent! Adieu!" },
+                3: { sentence: "Une bière, en coup de vent!", food: "beer", exitSentence: "Merci, je file! On se voit dans le coin! À bientôt!" }
+            },
+            por: {
+                0: { sentence: "Um café, agora! E uma maçã para a corrida!", food: "coffee,apple", exitSentence: "Obrigado, vou indo! Não tenho tempo a perder! Tchau!" },
+                1: { sentence: "Rápido! Um sanduíche com tomate e azeite!", food: "bread,tomato,oil", exitSentence: "Perfeito, vou indo! A pressa me chama! Adeus!" },
+                2: { sentence: "Água e abacaxi, depressa!", food: "water,pinea", exitSentence: "Obrigado, tenho que ir! Tempo é dinheiro! Adeus!" },
+                3: { sentence: "Uma cerveja, rapidinho!", food: "beer", exitSentence: "Obrigado, estou saindo! A gente se vê por aí! Até breve!" }
+            },
+            eng: {
+                0: { sentence: "A coffee, now! And an apple for the run!", food: "coffee,apple", exitSentence: "Thanks, I'm off! No time to waste! Bye!" },
+                1: { sentence: "Quick! A sandwich with tomato and oil!", food: "bread,tomato,oil", exitSentence: "Perfect, let's go! Hurry calls! Goodbye!" },
+                2: { sentence: "Water and pineapple, quickly!", food: "water,pinea", exitSentence: "Thanks, gotta go! Time is money! Farewell!" },
+                3: { sentence: "A beer, on the fly!", food: "beer", exitSentence: "Thanks, gotta run! See you around! See you soon!" }
+            },
+            spa: {
+                0: { sentence: "¡Un café, ahora! ¡Y una manzana para la carrera!", food: "coffee,apple", exitSentence: "Gracias, ¡me voy! ¡No tengo tiempo que perder! ¡Chao!" },
+                1: { sentence: "¡Rápido! ¡Un sándwich de tomate y aceite!", food: "bread,tomato,oil", exitSentence: "¡Perfecto, listo! ¡La prisa me llama! ¡Adiós!" },
+                2: { sentence: "¡Agua y piña, deprisa!", food: "water,pinea", exitSentence: "Gracias, ¡tengo que irme! ¡El tiempo es dinero! ¡Adiós!" },
+                3: { sentence: "¡Una cerveza, al vuelo!", food: "beer", exitSentence: "Gracias, ¡me escapo! ¡Nos vemos por ahí! ¡Hasta pronto!" }
+            },
+            ind: {
+                0: { sentence: "Kopi, sekarang! Dan apel untuk lari!", food: "coffee,apple", exitSentence: "Terima kasih, saya pergi! Tidak ada waktu untuk disia-siakan! Dadah!" },
+                1: { sentence: "Cepat! Roti lapis dengan tomat dan minyak!", food: "bread,tomato,oil", exitSentence: "Sempurna, ayo! Terburu-buru memanggil! Selamat tinggal!" },
+                2: { sentence: "Air dan nanas, cepat!", food: "water,pinea", exitSentence: "Terima kasih, saya harus pergi! Waktu adalah uang! Selamat tinggal!" },
+                3: { sentence: "Bir, cepat!", food: "beer", exitSentence: "Terima kasih, saya kabur! Sampai jumpa! Sampai jumpa lagi!" }
+            }
+        },
+        7: { // Cliente nostalgico - Ricette che richiamano il passato, anche con un tocco strano
+            ita: {
+                0: { sentence: "Come una volta... un panino con pomodoro e olio, e un po' di birra nel biberon, come faceva mio nonno (forse).", food: "bread,tomato,oil,beer,biberon", exitSentence: "Ah, i vecchi tempi... Grazie per il salto nel passato. Arrivederci." },
+                1: { sentence: "Mi ricorda le estati da bambino... un'insalata con pomodoro e ananas, e un bicchiere d'acqua fresca.", food: "salad,tomato,pinea,water", exitSentence: "Un dolce ricordo d'infanzia. Grazie, mi hai fatto tornare il sorriso. A presto." },
+                2: { sentence: "Il caffè... come quello che bevevo la mattina prima di andare a lavorare nei campi. E un pezzo di pane.", food: "coffee,bread", exitSentence: "Quel sapore... mi ha riportato indietro. Grazie e addio." },
+                3: { sentence: "Una mela... semplice, come i giochi di una volta. E una cola, che allora era un lusso!", food: "apple,cola", exitSentence: "Un piccolo lusso che sa di tempi andati. Grazie di tutto. Ciao." }
+            },
+            fra: {
+                0: { sentence: "Comme autrefois... un sandwich à la tomate et à l'huile, et un peu de bière dans le biberon, comme mon grand-père (peut-être).", food: "bread,tomato,oil,beer,biberon", exitSentence: "Ah, le bon vieux temps... Merci pour ce voyage dans le passé. Au revoir." },
+                1: { sentence: "Ça me rappelle les étés quand j'étais enfant... une salade de tomate et d'ananas, et un verre d'eau fraîche.", food: "salad,tomato,pinea,water", exitSentence: "Un doux souvenir d'enfance. Merci, vous m'avez redonné le sourire. À bientôt." },
+                2: { sentence: "Le café... comme celui que je buvais le matin avant d'aller travailler aux champs. Et un morceau de pain.", food: "coffee,bread", exitSentence: "Ce goût... m'a ramené en arrière. Merci et adieu." },
+                3: { sentence: "Une pomme... simple, comme les jeux d'antan. Et un cola, qui était un luxe à l'époque!", food: "apple,cola", exitSentence: "Un petit luxe qui a le goût du passé. Merci pour tout. Salut." }
+            },
+            por: {
+                0: { sentence: "Como antigamente... um sanduíche com tomate e azeite, e um pouco de cerveja na mamadeira, como meu avô fazia (talvez).", food: "bread,tomato,oil,beer,biberon", exitSentence: "Ah, os velhos tempos... Obrigado pela viagem ao passado. Adeus." },
+                1: { sentence: "Isso me lembra os verões de criança... uma salada com tomate e abacaxi, e um copo de água fresca.", food: "salad,tomato,pinea,water", exitSentence: "Uma doce lembrança de infância. Obrigado, você me fez sorrir de novo. Até breve." },
+                2: { sentence: "O café... como o que eu bebia de manhã antes de ir trabalhar nos campos. E um pedaço de pão.", food: "coffee,bread", exitSentence: "Aquele sabor... me trouxe de volta. Obrigado e adeus." },
+                3: { sentence: "Uma maçã... simples, como os jogos de antigamente. E uma cola, que na época era um luxo!", food: "apple,cola", exitSentence: "Um pequeno luxo com sabor de tempos passados. Obrigado por tudo. Tchau." }
+            },
+            eng: {
+                0: { sentence: "Like in the old days... a sandwich with tomato and oil, and a little beer in the baby bottle, like my grandfather used to do (maybe).", food: "bread,tomato,oil,beer,biberon", exitSentence: "Ah, the good old days... Thanks for the trip down memory lane. Goodbye." },
+                1: { sentence: "It reminds me of summer as a child... a salad with tomato and pineapple, and a glass of fresh water.", food: "salad,tomato,pinea,water", exitSentence: "A sweet childhood memory. Thanks, you made me smile again. See you soon." },
+                2: { sentence: "Coffee... like the one I used to drink in the morning before going to work in the fields. And a piece of bread.", food: "coffee,bread", exitSentence: "That taste... it took me back. Thanks and farewell." },
+                3: { sentence: "An apple... simple, like the games of yesteryear. And a cola, which was a luxury back then!", food: "apple,cola", exitSentence: "A small luxury that tastes of times gone by. Thanks for everything. Bye." }
+            },
+            spa: {
+                0: { sentence: "Como antes... un sándwich de tomate y aceite, y un poco de cerveza en el biberón, como hacía mi abuelo (quizás).", food: "bread,tomato,oil,beer,biberon", exitSentence: "Ah, los viejos tiempos... Gracias por el viaje al pasado. Adiós." },
+                1: { sentence: "Me recuerda a los veranos de niño... una ensalada de tomate y piña, y un vaso de agua fresca.", food: "salad,tomato,pinea,water", exitSentence: "Un dulce recuerdo de infancia. Gracias, me hiciste sonreír de nuevo. Hasta pronto." },
+                2: { sentence: "El café... como el que bebía por la mañana antes de ir a trabajar al campo. Y un trozo de pan.", food: "coffee,bread", exitSentence: "Ese sabor... me devolvió. Gracias y adiós." },
+                3: { sentence: "Una manzana... simple, como los juegos de antaño. ¡Y una cola, que entonces era un lujo!", food: "apple,cola", exitSentence: "Un pequeño lujo que sabe a tiempos pasados. Gracias por todo. Chao." }
+            },
+            ind: {
+                0: { sentence: "Seperti dulu... roti lapis dengan tomat dan minyak, dan sedikit bir di botol bayi, seperti yang kakek saya lakukan (mungkin).", food: "bread,tomato,oil,beer,biberon", exitSentence: "Ah, masa lalu... Terima kasih atas perjalanan kembali ke masa lalu. Selamat tinggal." },
+                1: { sentence: "Ini mengingatkan saya pada musim panas saat kecil... salad dengan tomat dan nanas, dan segelas air segar.", food: "salad,tomato,pinea,water", exitSentence: "Kenangan manis masa kecil. Terima kasih, Anda membuat saya tersenyum lagi. Sampai jumpa lagi." },
+                2: { sentence: "Kopi... seperti yang saya minum di pagi hari sebelum pergi bekerja di ladang. Dan sepotong roti.", food: "coffee,bread", exitSentence: "Rasa itu... membawa saya kembali. Terima kasih dan selamat tinggal." },
+                3: { sentence: "Apel... sederhana, seperti permainan masa lalu. Dan cola, yang dulu merupakan barang mewah!", food: "apple,cola", exitSentence: "Sebuah kemewahan kecil yang terasa seperti masa lalu. Terima kasih untuk semuanya. Dadah." }
+            }
+        },
+        8: { // Cliente che si lamenta - Lamentazioni seguite da un ordine
+            ita: {
+                0: { sentence: "Questa birra fa schifo, ma dammene una lo stesso. E un panino, che almeno quello non lo rovini.", food: "beer,bread", exitSentence: "Beh, si poteva fare di meglio. Ciao." },
+                1: { sentence: "L'insalata sembra appassita, ma se proprio devo mangiare qualcosa, prendo questa con un po' di pomodoro.", food: "salad,tomato", exitSentence: "Non era il massimo, ma pazienza. Arrivederci." },
+                2: { sentence: "Il caffè è acquoso, ma meglio di niente. E un po' d'acqua per diluirlo ancora di più.", food: "coffee,water", exitSentence: "Insomma... non mi ha convinto. Addio." },
+                3: { sentence: "L'ananas è troppo acido, ma lo prendo con un po' di olio, forse migliora.", food: "pinea,oil", exitSentence: "Non è andata benissimo. Ci si rivede... forse." }
+            },
+            fra: {
+                0: { sentence: "Cette bière est dégueulasse, mais donne-m'en une quand même. Et un sandwich, au moins tu ne peux pas le gâcher.", food: "beer,bread", exitSentence: "Eh bien, on pouvait faire mieux. Salut." },
+                1: { sentence: "La salade a l'air flétrie, mais si je dois vraiment manger quelque chose, je prends celle-ci avec un peu de tomate.", food: "salad,tomato", exitSentence: "Ce n'était pas le top, mais tant pis. Au revoir." },
+                2: { sentence: "Le café est aqueux, mais mieux que rien. Et un peu d'eau pour le diluer encore plus.", food: "coffee,water", exitSentence: "Bof... ça ne m'a pas convaincu. Adieu." },
+                3: { sentence: "L'ananas est trop acide, mais je le prends avec un peu d'huile, peut-être que ça s'améliore.", food: "pinea,oil", exitSentence: "Ça n'a pas été terrible. On se revoit... peut-être." }
+            },
+            por: {
+                0: { sentence: "Esta cerveja é horrível, mas me dê uma mesmo assim. E um sanduíche, que pelo menos isso você não estraga.", food: "beer,bread", exitSentence: "Bem, podia ser melhor. Tchau." },
+                1: { sentence: "A salada parece murcha, mas se eu realmente tenho que comer alguma coisa, pego esta com um pouco de tomate.", food: "salad,tomato", exitSentence: "Não foi o máximo, mas paciência. Adeus." },
+                2: { sentence: "O café é aguado, mas melhor do que nada. E um pouco de água para diluí-lo ainda mais.", food: "coffee,water", exitSentence: "Enfim... não me convenceu. Adeus." },
+                3: { sentence: "O abacaxi está muito ácido, mas vou levar com um pouco de azeite, talvez melhore.", food: "pinea,oil", exitSentence: "Não foi muito bom. A gente se vê... talvez." }
+            },
+            eng: {
+                0: { sentence: "This beer is awful, but give me one anyway. And a sandwich, at least you can't mess that up.", food: "beer,bread", exitSentence: "Well, it could have been better. Bye." },
+                1: { sentence: "The salad looks wilted, but if I really have to eat something, I'll take this one with some tomato.", food: "salad,tomato", exitSentence: "It wasn't the best, but oh well. Goodbye." },
+                2: { sentence: "The coffee is watery, but better than nothing. And some water to dilute it even more.", food: "coffee,water", exitSentence: "So-so... didn't convince me. Farewell." },
+                3: { sentence: "The pinea is too acidic, but I'll take it with a little oil, maybe it gets better.", food: "pinea,oil", exitSentence: "Didn't go very well. See you again... maybe." }
+            },
+            spa: {
+                0: { sentence: "Esta cerveza es horrible, pero dame una de todos modos. Y un sándwich, al menos eso no lo estropeas.", food: "beer,bread", exitSentence: "Bueno, se podía haber hecho mejor. Chao." },
+                1: { sentence: "La ensalada parece marchita, pero si de verdad tengo que comer algo, tomo esta con un poco de tomate.", food: "salad,tomato", exitSentence: "No fue lo máximo, pero paciencia. Adiós." },
+                2: { sentence: "El café está aguado, pero mejor que nada. Y un poco de agua para diluirlo aún más.", food: "coffee,water", exitSentence: "En fin... no me convenció. Adiós." },
+                3: { sentence: "La piña está demasiado ácida, pero la tomaré con un poco de aceite, quizás mejora.", food: "pinea,oil", exitSentence: "No fue muy bien. Nos vemos... quizás." }
+            },
+            ind: {
+                0: { sentence: "Bir ini payah, tapi beri saya satu saja. Dan roti lapis, setidaknya itu tidak akan Anda rusak.", food: "beer,bread", exitSentence: "Yah, bisa lebih baik. Dadah." },
+                1: { sentence: "Saladnya terlihat layu, tapi jika memang harus makan sesuatu, saya ambil yang ini dengan sedikit tomat.", food: "salad,tomato", exitSentence: "Bukan yang terbaik, tapi ya sudahlah. Selamat tinggal." },
+                2: { sentence: "Kopinya encer, tapi lebih baik daripada tidak sama sekali. Dan sedikit air untuk mengencerkannya lagi.", food: "coffee,water", exitSentence: "Begitulah... tidak meyakinkan saya. Selamat tinggal." },
+                3: { sentence: "Nanasnya terlalu asam, tapi saya akan mengambilnya dengan sedikit minyak, mungkin lebih baik.", food: "pinea,oil", exitSentence: "Tidak berjalan dengan baik. Sampai jumpa lagi... mungkin." }
+            }
+        }
+
+    }
+    const tableLeft = document.getElementById("table").offsetLeft
+    let myClientType
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const floor0FoodArray = document.getElementsByClassName("foodFloor0")
+        const floor1FoodArray = document.getElementsByClassName("foodFloor1")
+        const floor2FoodArray = document.getElementsByClassName("foodFloor2")
+        const floor3FoodArray = document.getElementsByClassName("foodFloor3")
+        const floor4FoodArray = document.getElementsByClassName("foodFloor4")
+
+        function putFoodOnTheTable() {
+            const bread = document.createElement("img");
+            bread.src = "food/bread.png";
+            bread.className = "food"
+            bread.style.position = "absolute"
+            bread.style.left = tableLeft + 450 + 'px'
+            bread.style.width = "200px"
+            bread.style.top = 300 + "px"
+            document.getElementById("tableContainer").appendChild(bread)
+
+            const oil = document.createElement("img");
+            oil.className = "food"
+            oil.src = "food/oil.png";
+            oil.style.position = "absolute"
+            oil.style.left = tableLeft + 700 + 'px'
+            oil.style.height = "300px"
+            oil.style.top = 300 + "px"
+            document.getElementById("tableContainer").appendChild(oil)
+
+            const coffee = document.createElement("img");
+            coffee.className = "food"
+            coffee.src = "food/coffee.png";
+            coffee.style.position = "absolute"
+            coffee.style.left = tableLeft + 850 + 'px'
+            coffee.style.height = "300px"
+            coffee.style.top = 300 + "px"
+            document.getElementById("tableContainer").appendChild(coffee)
+
+
+            const apple = document.createElement("img");
+            apple.className = "food"
+            apple.src = "food/apple.png";
+            apple.style.position = "absolute"
+            apple.style.left = tableLeft + 1050 + 'px'
+            apple.style.height = "300px"
+            apple.style.top = 300 + "px"
+            document.getElementById("tableContainer").appendChild(apple)
+
+            const dog = document.createElement("img");
+            dog.src = "dog.png";
+            dog.id = "dog"
+            dog.style.position = "absolute"
+            dog.style.left = tableLeft + 1250 + 'px'
+            dog.style.height = "300px"
+            dog.style.top = 300 + "px"
+            document.getElementById("tableContainer").appendChild(dog)
+
+
+        }
+        function userClickedAFood(clickedFood) {
+            if (!clientIsHere) {
+                alert("Non ci sono clienti!")
+
+            }
+            else if (clickedFood == "dog") {
+                document.getElementsByTagName("p")[0].innerText = "NOOOOOOOOOOOOOOOOOOOOOOOOO!!!!"
+                document.getElementsByTagName("header")[0].style.backgroundColor = "purple";
+
+                clientWantedFood = ""
+                setTimeout(() => {
+                    console.log("!!!!!!!!!!!!!!!!!!!!!!!!!!!ora tolgo: " + myClientType)
+                    document.getElementsByTagName("header")[0].style.backgroundColor = "white";
+                    document.getElementById(myClientType).style.display = "none"
+                    document.getElementById(myClientType).id = ""
+                    document.getElementsByTagName("p")[0].innerText = ""
+                    clientIsHere = false
+                    startGame()
+                }, 1000);
+            }
+            else if (clientWantedFood.includes(clickedFood)) {
+                clientWantedFood = clientWantedFood.replace(clickedFood, "")
+                clientWantedFood = clientWantedFood.replace(",", "")
+                document.getElementsByTagName("header")[0].style.backgroundColor = "green";
+                let newScore = parseInt(document.getElementById("score").innerText.split(": ")[1]) + 1
+                document.getElementById("score").innerText = "Score: " + newScore
+                setTimeout(() => {
+                    document.getElementsByTagName("header")[0].style.backgroundColor = "white";
+                }, 500);
+                if (clientWantedFood.length == 0) {
+                    document.getElementsByTagName("p")[0].innerText = gameMessages[myClientType][lang][recipeN].exitSentence
+                    setTimeout(() => {
+                        console.log("3333333333333333333333!ora tolgo: " + myClientType)
+                        document.getElementById(myClientType).style.display = "none"
+                        document.getElementById(myClientType).id = ""
+
+                        document.getElementsByTagName("p")[0].innerText = ""
+                        clientIsHere = false
+                        startGame()
+                    }, 1000);
+
+                }
+            }
+            else {
+                document.getElementsByTagName("header")[0].style.backgroundColor = "red";
+                let newScore = parseInt(document.getElementById("score").innerText.split(": ")[1]) - 1
+                document.getElementById("score").innerText = "Score: " + newScore
+                setTimeout(() => {
+                    document.getElementsByTagName("header")[0].style.backgroundColor = "white";
+                }, 500);
+            }
+        }
+        putFoodOnTheTable()
+        function toggleFridge() {
+            const floorsFoodArray = [
+                floor0FoodArray,
+                floor1FoodArray,
+                floor2FoodArray,
+                floor3FoodArray,
+                floor4FoodArray
+            ];
+            const yFromBottom = [
+                -80, -220, -330, -460, -550
+            ]
+            if (closedFridge.style.display == "" || closedFridge.style.display == "block") {
+                closedFridge.style.display = "none"
+                openFridge.style.display = "block"
+                for (let floor = 0; floor < 5; floor++) {
+                    const currentFloorArray = floorsFoodArray[floor];
+                    console.log(currentFloorArray);
+                    let xFromLeft = 30;
+                    if (currentFloorArray && currentFloorArray.length > 0) {
+                        for (let i = 0; i < currentFloorArray.length; i++) {
+                            currentFloorArray[i].style.left = xFromLeft + "px";
+                            currentFloorArray[i].style.display = "block";
+                            currentFloorArray[i].style.top = openFridge.offsetHeight + yFromBottom[floor] + "px";
+                            console.log("piano " + floor + " " + openFridge.offsetHeight + yFromBottom[i] + "px")
+                            xFromLeft = currentFloorArray[i].offsetWidth + 10 + xFromLeft;
+                        }
+                    }
+                }
+
+
+            }
+            else if (openFridge.style.display == "" || openFridge.style.display == "block") {
+                openFridge.style.display = "none"
+                closedFridge.style.display = "block"
+                for (let floor = 0; floor < 5; floor++) {
+                    const currentFloorArray = floorsFoodArray[floor];
+                    console.log(currentFloorArray);
+                    if (currentFloorArray && currentFloorArray.length > 0) {
+                        for (let i = 0; i < currentFloorArray.length; i++) {
+                            currentFloorArray[i].style.display = "none"
+
+                        }
+                    }
+                }
+            }
+        }
+        let timeOver = 60
+        function timeOverDecrease() {
+            timeOver--
+            document.getElementById("time").innerText = "Time: " + timeOver
+            if (timeOver == 0) {
+                clearInterval(intervalId)
+                document.getElementsByTagName("header")[0].style.backgroundColor = "yellow";
+                alert(document.getElementById("score").textContent)
+            }
+        }
+        function startChat(myClientType) {
+            recipeN = Math.floor(Math.random() * 4)
+            console.log(myClientType)
+            console.log(gameMessages[myClientType][lang][recipeN].sentence)
+            clientMessage = gameMessages[myClientType][lang][recipeN].sentence
+            clientWantedFood = gameMessages[myClientType][lang][recipeN].food
+            if (document.getElementsByTagName("p").length == 0) {
+                const chatP = document.createElement("p");
+                chatP.style.position = "absolute"
+                chatP.style.left = tableLeft + 650 + 'px'
+                chatP.style.display = "inline"
+                chatP.style.color = "white"
+                chatP.style.fontFamily = "cursive"
+                chatP.style.fontSize = "x-large"
+                document.getElementById("tableContainer").appendChild(chatP)
+            }
+            document.getElementsByTagName("p")[0].textContent = clientMessage
+            clientIsHere = true
+        }
+        let intervalId = null;
+
+        function startGame() {
+            if (!intervalId) {
+                intervalId = setInterval(timeOverDecrease, 1000);
+            }
+            myClientType = Math.floor(Math.random() * 9)
+            const img = document.createElement("img");
+            img.src = "clients/" + myClientType + ".png";
+            img.id = myClientType
+            img.style.position = "absolute"
+            img.style.left = tableLeft + 450 + 'px'
+            img.style.width = "200px"
+            document.getElementById("tableContainer").appendChild(img)
+            setTimeout(() => {
+                startChat(myClientType)
+            }, 1000);
+        }
+
+        document.getElementById("start").addEventListener("click", startGame)
+        document.getElementById("fridgeContainer").addEventListener("click", toggleFridge)
+        function makeFoodClickable() {
+            let foodArray = document.getElementsByClassName("food")
+            for (let i = 0; i < foodArray.length; i++) {
+                foodArray[i].addEventListener("click", () => { userClickedAFood(foodArray[i].src.split("food/")[1].split(".")[0]) })
+
+            }
+        }
+        makeFoodClickable()
+        document.getElementById("dog").addEventListener("click", () => { userClickedAFood("dog") })
+
+
+        /*function sendAI() { 
+ 
+        fetch(`http://151.242.69.106:3001/api/openai`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ prompt: listForAi })
+        })
+            .then(response => {
+                return response.json().then(responseBody => {
+                    openAiSpan.style.display="block"
+                    if (response.ok) {
+                        openAi.innerText = responseBody.completion.content;
+                    } else {
+                        openAi.innerText = responseBody.error
+                        throw new Error('Network response was not ok: ' + responseBody.error);
+                    }
+                });
+            })
+            .catch(error => {
+                console.error('There was a problem with the fetch operation:', error);
+            });
+    }*/
+
+    })
+</script>
