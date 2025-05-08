@@ -53,13 +53,13 @@
             display: none;
             position: absolute;
             height: 90vh;
-            width: 400px;
+            width: 30%;
         }
 
         #closedFridge {
             position: absolute;
             height: 90vh;
-            width: 250px;
+            width: 20%;
         }
 
         #start {
@@ -87,35 +87,35 @@
         }
 
         .foodFloor0 {
-            height: 100px;
+            height: 15vh;
             position: absolute;
             display: none;
 
         }
 
         .foodFloor1 {
-            height: 125px;
+            height: 15vh;
             position: absolute;
             display: none;
 
         }
 
         .foodFloor2 {
-            height: 100px;
+            height: 15vh;
             position: absolute;
             display: none;
 
         }
 
         .foodFloor3 {
-            height: 100px;
+            height: 15vh;
             position: absolute;
             display: none;
 
         }
 
         .foodFloor4 {
-            height: 100px;
+            height: 15vh;
             position: absolute;
             display: none;
         }
@@ -680,6 +680,7 @@
                 }
             }
             localStorage.setItem('myCustomClients', JSON.stringify(myCustomClients));
+            toggleSetting()
         });
 
         function toggleSetting() {
@@ -725,10 +726,10 @@
             bread.src = "food/bread.png";
             bread.className = "food"
             bread.style.position = "absolute"
-            bread.style.left = 450 + "px"
+            bread.style.left = "30%"
             bread.id = "bread"
-            bread.style.width = "200px"
-            bread.style.top = screenHeight - 300 + "px"
+            bread.style.width = "15%"
+            bread.style.top = "80%"
             document.getElementById("tableContainer").appendChild(bread)
 
             const oil = document.createElement("img");
@@ -737,9 +738,9 @@
 
             oil.src = "food/oil.png";
             oil.style.position = "absolute"
-            oil.style.left = 650 + 'px'
-            oil.style.height = "300px"
-            oil.style.top = "400px"
+            oil.style.left = '45%'
+            oil.style.height = "30%"
+            oil.style.top = "40%"
             document.getElementById("tableContainer").appendChild(oil)
 
             const coffee = document.createElement("img");
@@ -748,9 +749,9 @@
 
             coffee.src = "food/coffee.png";
             coffee.style.position = "absolute"
-            coffee.style.left = 650 + 'px'
-            coffee.style.height = "200px"
-            coffee.style.top = 150 + "px"
+            coffee.style.left = "30%"
+            coffee.style.height = "30%"
+            coffee.style.top = "40%"
             document.getElementById("tableContainer").appendChild(coffee)
 
 
@@ -759,18 +760,18 @@
             apple.src = "food/apple.png";
             apple.id = "apple"
             apple.style.position = "absolute"
-            apple.style.left = 450 + 'px'
-            apple.style.height = "250px"
-            apple.style.top = 350 + "px"
+            apple.style.left = "60%"
+            apple.style.height = "20%"
+            apple.style.top = "30%"
             document.getElementById("tableContainer").appendChild(apple)
 
             const dog = document.createElement("img");
             dog.src = "dog.png";
             dog.id = "dog"
             dog.style.position = "absolute"
-            dog.style.left = 800 + 'px'
-            dog.style.height = "300px"
-            dog.style.top = 300 + "px"
+            dog.style.left = "70%"
+            dog.style.height = "30%"
+            dog.style.top = "40%"
             document.getElementById("tableContainer").appendChild(dog)
         }
         function userClickedAFood(clickedFood) {
@@ -891,7 +892,7 @@
             if (document.getElementsByTagName("p").length == 0) {
                 const chatP = document.createElement("p");
                 chatP.style.position = "absolute"
-                chatP.style.left = 650 + 'px'
+                chatP.style.left = "50%"
                 chatP.style.display = "inline"
                 chatP.style.color = "white"
                 chatP.style.fontFamily = "cursive"
@@ -922,9 +923,9 @@
             }
             img.id = myClientType
             img.style.position = "absolute"
-            img.style.left = 450 + 'px'
-            img.style.width = "200px"
-            img.style.maxHeight="250px"
+            img.style.left = "30%"
+            img.style.width = "15%"
+            img.style.maxHeight="25%"
             document.getElementById("tableContainer").appendChild(img)
             setTimeout(() => {
                 startChat(myClientType)
