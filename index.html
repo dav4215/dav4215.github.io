@@ -927,7 +927,8 @@
             if (!intervalId) {
                 intervalId = setInterval(timeOverDecrease, 1000);
             }
-            const myCustomClients = JSON.parse(localStorage.getItem('myCustomClients'))
+            const myCustomClients = {}
+            myCustomClients=JSON.parse(localStorage.getItem('myCustomClients'))
             myClientType = Math.floor(Math.random() * 9)
             const img = document.createElement("img");
             let thisCustomClient = "customClient" + myClientType
