@@ -63,8 +63,9 @@
         }
 
         #start {
-            height: 50px;
             width: 100px;
+            height: 10vh;
+            background-color: chartreuse;
         }
 
         header {
@@ -738,7 +739,7 @@
 
             oil.src = "food/oil.png";
             oil.style.position = "absolute"
-            oil.style.left = '45%'
+            oil.style.left = '40%'
             oil.style.height = "30%"
             oil.style.top = "40%"
             document.getElementById("tableContainer").appendChild(oil)
@@ -761,17 +762,17 @@
             apple.id = "apple"
             apple.style.position = "absolute"
             apple.style.left = "60%"
-            apple.style.height = "20%"
-            apple.style.top = "30%"
+            apple.style.height = "25%"
+            apple.style.top = "70%"
             document.getElementById("tableContainer").appendChild(apple)
 
             const dog = document.createElement("img");
             dog.src = "dog.png";
             dog.id = "dog"
             dog.style.position = "absolute"
-            dog.style.left = "70%"
+            dog.style.left = "80%"
             dog.style.height = "30%"
-            dog.style.top = "40%"
+            dog.style.top = "70%"
             document.getElementById("tableContainer").appendChild(dog)
         }
         function userClickedAFood(clickedFood) {
