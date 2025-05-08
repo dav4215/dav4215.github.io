@@ -758,7 +758,6 @@
             const oil = document.createElement("img");
             oil.className = "food"
             oil.id = "oil"
-
             oil.src = "food/oil.png";
             oil.style.position = "absolute"
             oil.style.left = '40%'
@@ -769,7 +768,6 @@
             const coffee = document.createElement("img");
             coffee.className = "food"
             coffee.id = "coffee"
-
             coffee.src = "food/coffee.png";
             coffee.style.position = "absolute"
             coffee.style.left = "30%"
@@ -859,7 +857,7 @@
                 floor4FoodArray
             ];
             const yFromBottom = [
-                -80, -220, -330, -460, -550
+                "10vh", "25vh", "45vh", "60vh", "80vh"
             ]
             if (closedFridge.style.display == "" || closedFridge.style.display == "block") {
                 closedFridge.style.display = "none"
@@ -872,8 +870,7 @@
                         for (let i = 0; i < currentFloorArray.length; i++) {
                             currentFloorArray[i].style.left = xFromLeft + "px";
                             currentFloorArray[i].style.display = "block";
-                            currentFloorArray[i].style.top = openFridge.offsetHeight + yFromBottom[floor] + "px";
-                            console.log("piano " + floor + " " + openFridge.offsetHeight + yFromBottom[i] + "px")
+                            currentFloorArray[i].style.top =  yFromBottom[floor]                            
                             xFromLeft = currentFloorArray[i].offsetWidth + 10 + xFromLeft;
                         }
                     }
