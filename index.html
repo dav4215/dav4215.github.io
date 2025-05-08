@@ -635,6 +635,7 @@
         const floor3FoodArray = document.getElementsByClassName("foodFloor3")
         const floor4FoodArray = document.getElementsByClassName("foodFloor4")
         let hiddenSetting = true
+        let myClientType
 
         const fileInputs = document.querySelectorAll('#spanSetting input[type="file"]');
         const saveButton = document.getElementById('save');
@@ -936,7 +937,7 @@
                 myCustomClients = JSON.parse(storedClients);
             }
 
-            const myClientType = Math.floor(Math.random() * 9);
+             myClientType = Math.floor(Math.random() * 9);
             const img = document.createElement("img");
             let thisCustomClient = "customClient" + myClientType;
             console.log(thisCustomClient);
