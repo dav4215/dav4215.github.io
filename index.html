@@ -6,16 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
-
-        #save,#reset{
-            margin:10px 0
+        #save,
+        #reset {
+            margin: 10px 0
         }
-        #save{
+
+        #save {
             background-color: green;
         }
-        #reset{
+
+        #reset {
             background-color: red;
         }
+
         .preview-container {
             display: flex;
             align-items: center;
@@ -695,7 +698,7 @@
             toggleSetting()
         });
 
-        function resetImgs(){
+        function resetImgs() {
             localStorage.removeItem('myCustomClients');
             toggleSetting()
         }
@@ -714,12 +717,12 @@
                 dog.style.display = "none"
                 oil.style.display = "none"
                 coffee.style.display = "none"
-                document.getElementsByTagName("body")[0].style.overflow="auto"
+                document.getElementsByTagName("body")[0].style.overflow = "auto"
 
                 hiddenSetting = false
             }
             else {
-                document.getElementsByTagName("body")[0].style.overflow="hidden"
+                document.getElementsByTagName("body")[0].style.overflow = "hidden"
 
                 settingSpan.style.display = "none"
                 hiddenSetting = true
@@ -927,24 +930,28 @@
             if (!intervalId) {
                 intervalId = setInterval(timeOverDecrease, 1000);
             }
-            const myCustomClients = {}
-            myCustomClients=JSON.parse(localStorage.getItem('myCustomClients'))
-            myClientType = Math.floor(Math.random() * 9)
-            const img = document.createElement("img");
-            let thisCustomClient = "customClient" + myClientType
-            console.log(thisCustomClient)
-            console.log(myCustomClients)
-            if (myCustomClients[thisCustomClient]) {
-                img.src = myCustomClients[thisCustomClient]
+            let myCustomClients = {};
+            const storedClients = localStorage.getItem('myCustomClients');
+            if (storedClients) {
+                myCustomClients = JSON.parse(storedClients);
             }
-            else {
+
+            const myClientType = Math.floor(Math.random() * 9);
+            const img = document.createElement("img");
+            let thisCustomClient = "customClient" + myClientType;
+            console.log(thisCustomClient);
+            console.log(myCustomClients);
+
+            if (myCustomClients[thisCustomClient]) {
+                img.src = myCustomClients[thisCustomClient];
+            } else {
                 img.src = "clients/" + myClientType + ".png";
             }
             img.id = myClientType
             img.style.position = "absolute"
             img.style.left = "30%"
             img.style.width = "15%"
-            img.style.maxHeight="25%"
+            img.style.maxHeight = "25%"
             document.getElementById("tableContainer").appendChild(img)
             setTimeout(() => {
                 startChat(myClientType)
