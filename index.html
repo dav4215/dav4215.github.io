@@ -6,6 +6,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+        .preview-container {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .preview-image {
+            width: 100px;
+            /* Dimensione dell'anteprima */
+            height: 100px;
+            object-fit: cover;
+            /* Assicura che l'immagine copra l'area senza distorsioni */
+            margin-right: 10px;
+            border: 1px solid #ccc;
+        }
+
+        .error-message {
+            color: red;
+        }
+
         #table {
             height: 90vh;
             width: 100%;
@@ -54,6 +74,7 @@
             padding: 0 10px;
             align-items: center;
             font-family: cursive;
+            background-color: white;
         }
 
         h1 {
@@ -98,6 +119,26 @@
             position: absolute;
             display: none;
         }
+
+        #spanSetting {
+            padding-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 40%;
+            align-items: flex-start;
+
+        }
+
+
+        body {
+            background-image: url(table.png);
+        }
+
+        #tableContainer {
+            display: flex;
+            justify-content: center;
+        }
     </style>
 
 </head>
@@ -106,6 +147,7 @@
     <header>
         <h1>Welcome and good cook!</h1>
         <button id="start">Start</button>
+        <button id="setting">Setting</button>
         <span id="time">Time: 00</span>
         <span id="score">Score: 00</span>
     </header>
@@ -126,7 +168,64 @@
 
         </span>
         <span id="tableContainer">
-            <img id="table" src="table.png" alt="table">
+            <span style="display:none" id="spanSetting">
+                <h2>Seleziona i clienti:</h2>
+                <div class="preview-container">
+                    <input type="file" id="customClient0" accept="image/*">
+                    <img class="preview-image" id="preview0" src="#" alt="Anteprima cliente 0" style="display: none;">
+                    <span class="error-message" id="error0"></span>
+                </div>
+
+                <div class="preview-container">
+                    <input type="file" id="customClient1" accept="image/*">
+                    <img class="preview-image" id="preview1" src="#" alt="Anteprima cliente 1" style="display: none;">
+                    <span class="error-message" id="error1"></span>
+                </div>
+
+                <div class="preview-container">
+                    <input type="file" id="customClient2" accept="image/*">
+                    <img class="preview-image" id="preview2" src="#" alt="Anteprima cliente 2" style="display: none;">
+                    <span class="error-message" id="error2"></span>
+                </div>
+
+                <div class="preview-container">
+                    <input type="file" id="customClient3" accept="image/*">
+                    <img class="preview-image" id="preview3" src="#" alt="Anteprima cliente 3" style="display: none;">
+                    <span class="error-message" id="error3"></span>
+                </div>
+
+                <div class="preview-container">
+                    <input type="file" id="customClient4" accept="image/*">
+                    <img class="preview-image" id="preview4" src="#" alt="Anteprima cliente 4" style="display: none;">
+                    <span class="error-message" id="error4"></span>
+                </div>
+
+                <div class="preview-container">
+                    <input type="file" id="customClient5" accept="image/*">
+                    <img class="preview-image" id="preview5" src="#" alt="Anteprima cliente 5" style="display: none;">
+                    <span class="error-message" id="error5"></span>
+                </div>
+
+                <div class="preview-container">
+                    <input type="file" id="customClient6" accept="image/*">
+                    <img class="preview-image" id="preview6" src="#" alt="Anteprima cliente 6" style="display: none;">
+                    <span class="error-message" id="error6"></span>
+                </div>
+
+                <div class="preview-container">
+                    <input type="file" id="customClient7" accept="image/*">
+                    <img class="preview-image" id="preview7" src="#" alt="Anteprima cliente 7" style="display: none;">
+                    <span class="error-message" id="error7"></span>
+                </div>
+
+                <div class="preview-container">
+                    <input type="file" id="customClient8" accept="image/*">
+                    <img class="preview-image" id="preview8" src="#" alt="Anteprima cliente 8" style="display: none;">
+                    <span class="error-message" id="error8"></span>
+                </div>
+
+                <button id="save">save</button>
+            </span>
 
         </span>
 
@@ -143,24 +242,27 @@
     let clicketFood = ""
     let clientIsHere = false
     let lang = "eng"
+    const screenWidth = window.screen.width;
+    const screenHeight = window.screen.height;
+
 
     function setLang() {
         if (navigator.languages.indexOf("it") > -1) {
-                lang = "ita"
-            }
-            else if (navigator.languages.indexOf("fr") > -1) {
-                lang = "fra"
-            }
-            else if (navigator.languages.indexOf("id") > -1) {
-                lang = "ind"
-            }
-            else if (navigator.languages.indexOf("pt") > -1) {
-                lang = "por"
-            }
-            else if (navigator.languages.indexOf("es") > -1) {
-                lang = "spa"
-            }
-            else lang = "eng"
+            lang = "ita"
+        }
+        else if (navigator.languages.indexOf("fr") > -1) {
+            lang = "fra"
+        }
+        else if (navigator.languages.indexOf("id") > -1) {
+            lang = "ind"
+        }
+        else if (navigator.languages.indexOf("pt") > -1) {
+            lang = "por"
+        }
+        else if (navigator.languages.indexOf("es") > -1) {
+            lang = "spa"
+        }
+        else lang = "eng"
     }
     setLang()
     const gameMessages = {
@@ -508,8 +610,8 @@
         }
 
     }
-    const tableLeft = document.getElementById("table").offsetLeft
     let myClientType
+
 
     document.addEventListener("DOMContentLoaded", function () {
         const floor0FoodArray = document.getElementsByClassName("foodFloor0")
@@ -517,55 +619,159 @@
         const floor2FoodArray = document.getElementsByClassName("foodFloor2")
         const floor3FoodArray = document.getElementsByClassName("foodFloor3")
         const floor4FoodArray = document.getElementsByClassName("foodFloor4")
+        let hiddenSetting = true
+
+        const fileInputs = document.querySelectorAll('#spanSetting input[type="file"]');
+        const saveButton = document.getElementById('save');
+        const validImageUrls = {}; // Oggetto per memorizzare gli URL validi per ID
+
+        // Funzione per gestire il cambiamento di un input file
+        const handleFileChange = (event) => {
+            const fileInput = event.target;
+            const fileId = fileInput.id;
+            const fileIndex = fileId.replace('customClient', ''); // Estrae l'indice
+            const previewImage = document.getElementById('preview' + fileIndex);
+            const errorMessageSpan = document.getElementById('error' + fileIndex);
+            const selectedFile = fileInput.files[0];
+
+            // Resetting previous states
+            previewImage.style.display = 'none';
+            previewImage.src = '#';
+            errorMessageSpan.textContent = '';
+            delete validImageUrls[fileId]; // Rimuove l'eventuale URL precedente per questo input
+
+            if (selectedFile) {
+                // Verifica se il file è un'immagine
+                if (selectedFile.type.startsWith('image/')) {
+                    const reader = new FileReader();
+
+                    reader.onload = (e) => {
+                        const imageUrl = e.target.result;
+                        previewImage.src = imageUrl;
+                        previewImage.style.display = 'block';
+                        validImageUrls[fileId] = imageUrl; // Salva l'URL se l'immagine è valida
+                    };
+
+                    reader.onerror = () => {
+                        errorMessageSpan.textContent = 'Errore durante la lettura del file.';
+                        console.error("Errore durante la lettura del file:", selectedFile.name);
+                    };
+
+                    reader.readAsDataURL(selectedFile);
+                } else {
+                    errorMessageSpan.textContent = 'Seleziona un file immagine valido.';
+                }
+            }
+        };
+
+        // Aggiungi listener per ogni input file
+        fileInputs.forEach(input => {
+            input.addEventListener('change', handleFileChange);
+        });
+
+        // Listener per il pulsante "save"
+        saveButton.addEventListener('click', () => {
+            let myCustomClients = {};
+            console.log("URL delle immagini valide:");
+            for (const id in validImageUrls) {
+                if (validImageUrls.hasOwnProperty(id)) {
+                    console.log(`${id}: ${validImageUrls[id]}`);
+                    myCustomClients[id] = validImageUrls[id];
+                }
+            }
+            localStorage.setItem('myCustomClients', JSON.stringify(myCustomClients));
+        });
+
+        function toggleSetting() {
+            console.log("ok")
+            let settingSpan = document.getElementById("spanSetting")
+            let table = document.getElementsByTagName("body")[0]
+            if (hiddenSetting) {
+                settingSpan.style.display = "flex"
+                table.style.background = 'url("tableTransparent.png")'
+                apple.style.display = "none"
+                bread.style.display = "none"
+                dog.style.display = "none"
+                oil.style.display = "none"
+                coffee.style.display = "none"
+                document.getElementsByTagName("body")[0].style.overflow="auto"
+
+                hiddenSetting = false
+            }
+            else {
+                document.getElementsByTagName("body")[0].style.overflow="hidden"
+
+                settingSpan.style.display = "none"
+                hiddenSetting = true
+                table.style.background = 'url("table.png")'
+                apple.style.display = "block"
+                bread.style.display = "block"
+                dog.style.display = "block"
+                oil.style.display = "block"
+                coffee.style.display = "block"
+
+
+
+            }
+
+        }
+
+
+        document.getElementById("setting").addEventListener("click", toggleSetting)
+
 
         function putFoodOnTheTable() {
             const bread = document.createElement("img");
             bread.src = "food/bread.png";
             bread.className = "food"
             bread.style.position = "absolute"
-            bread.style.left = tableLeft + 450 + 'px'
+            bread.style.left = 450 + "px"
+            bread.id = "bread"
             bread.style.width = "200px"
-            bread.style.top = 300 + "px"
+            bread.style.top = screenHeight - 300 + "px"
             document.getElementById("tableContainer").appendChild(bread)
 
             const oil = document.createElement("img");
             oil.className = "food"
+            oil.id = "oil"
+
             oil.src = "food/oil.png";
             oil.style.position = "absolute"
-            oil.style.left = tableLeft + 700 + 'px'
+            oil.style.left = 650 + 'px'
             oil.style.height = "300px"
-            oil.style.top = 300 + "px"
+            oil.style.top = "400px"
             document.getElementById("tableContainer").appendChild(oil)
 
             const coffee = document.createElement("img");
             coffee.className = "food"
+            coffee.id = "coffee"
+
             coffee.src = "food/coffee.png";
             coffee.style.position = "absolute"
-            coffee.style.left = tableLeft + 850 + 'px'
-            coffee.style.height = "300px"
-            coffee.style.top = 300 + "px"
+            coffee.style.left = 650 + 'px'
+            coffee.style.height = "200px"
+            coffee.style.top = 150 + "px"
             document.getElementById("tableContainer").appendChild(coffee)
 
 
             const apple = document.createElement("img");
             apple.className = "food"
             apple.src = "food/apple.png";
+            apple.id = "apple"
             apple.style.position = "absolute"
-            apple.style.left = tableLeft + 1050 + 'px'
-            apple.style.height = "300px"
-            apple.style.top = 300 + "px"
+            apple.style.left = 450 + 'px'
+            apple.style.height = "250px"
+            apple.style.top = 350 + "px"
             document.getElementById("tableContainer").appendChild(apple)
 
             const dog = document.createElement("img");
             dog.src = "dog.png";
             dog.id = "dog"
             dog.style.position = "absolute"
-            dog.style.left = tableLeft + 1250 + 'px'
+            dog.style.left = 800 + 'px'
             dog.style.height = "300px"
             dog.style.top = 300 + "px"
             document.getElementById("tableContainer").appendChild(dog)
-
-
         }
         function userClickedAFood(clickedFood) {
             if (!clientIsHere) {
@@ -685,7 +891,7 @@
             if (document.getElementsByTagName("p").length == 0) {
                 const chatP = document.createElement("p");
                 chatP.style.position = "absolute"
-                chatP.style.left = tableLeft + 650 + 'px'
+                chatP.style.left = 650 + 'px'
                 chatP.style.display = "inline"
                 chatP.style.color = "white"
                 chatP.style.fontFamily = "cursive"
@@ -701,13 +907,24 @@
             if (!intervalId) {
                 intervalId = setInterval(timeOverDecrease, 1000);
             }
+            const myCustomClients = JSON.parse(localStorage.getItem('myCustomClients'))
             myClientType = Math.floor(Math.random() * 9)
             const img = document.createElement("img");
-            img.src = "clients/" + myClientType + ".png";
+            let thisCustomClient = "customClient" + myClientType
+            console.log(thisCustomClient)
+            console.log(myCustomClients)
+            console.log(myCustomClients[thisCustomClient])
+            if (myCustomClients[thisCustomClient]) {
+                img.src = myCustomClients[thisCustomClient]
+            }
+            else {
+                img.src = "clients/" + myClientType + ".png";
+            }
             img.id = myClientType
             img.style.position = "absolute"
-            img.style.left = tableLeft + 450 + 'px'
+            img.style.left = 450 + 'px'
             img.style.width = "200px"
+            img.style.maxHeight="250px"
             document.getElementById("tableContainer").appendChild(img)
             setTimeout(() => {
                 startChat(myClientType)
