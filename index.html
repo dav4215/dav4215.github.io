@@ -6,6 +6,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <style>
+
+        #save,#reset{
+            margin:10px 0
+        }
+        #save{
+            background-color: green;
+        }
+        #reset{
+            background-color: red;
+        }
         .preview-container {
             display: flex;
             align-items: center;
@@ -226,6 +236,7 @@
                 </div>
 
                 <button id="save">save</button>
+                <button id="reset">reset</button>
             </span>
 
         </span>
@@ -683,6 +694,13 @@
             localStorage.setItem('myCustomClients', JSON.stringify(myCustomClients));
             toggleSetting()
         });
+
+        function resetImgs(){
+            localStorage.removeItem('myCustomClients');
+            toggleSetting()
+        }
+        document.getElementById("reset").addEventListener("click", resetImgs)
+
 
         function toggleSetting() {
             console.log("ok")
