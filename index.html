@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>FOOD FOOD FOOD FOOD</title>
     <style>
         #save,
         #reset {
@@ -93,11 +93,11 @@
 
         h1 {
             font-weight: 400;
-            font-size: xx-large;
+            font-size: x-large;
         }
 
         header span {
-            font-size: xx-large;
+            font-size: x-large;
         }
 
         .foodFloor0 {
@@ -256,28 +256,23 @@
     let clientMessage = ""
     let clicketFood = ""
     let clientIsHere = false
-    let lang = "eng"
+    let lang="eng"
     const screenWidth = window.screen.width;
     const screenHeight = window.screen.height;
 
 
     function setLang() {
-        if (navigator.languages.indexOf("it") > -1) {
-            lang = "ita"
+        if (navigator.languages.some(l => l.startsWith("it"))) {
+            lang = "ita";
+        } else if (navigator.languages.some(l => l.startsWith("fr"))) {
+            lang = "fra";
+        } else if (navigator.languages.some(l => l.startsWith("id"))) {
+            lang = "ind";
+        } else if (navigator.languages.some(l => l.startsWith("pt"))) {
+            lang = "por";
+        } else if (navigator.languages.some(l => l.startsWith("es"))) {
+            lang = "spa";
         }
-        else if (navigator.languages.indexOf("fr") > -1) {
-            lang = "fra"
-        }
-        else if (navigator.languages.indexOf("id") > -1) {
-            lang = "ind"
-        }
-        else if (navigator.languages.indexOf("pt") > -1) {
-            lang = "por"
-        }
-        else if (navigator.languages.indexOf("es") > -1) {
-            lang = "spa"
-        }
-        else lang = "eng"
     }
     setLang()
     const gameMessages = {
@@ -870,7 +865,7 @@
                         for (let i = 0; i < currentFloorArray.length; i++) {
                             currentFloorArray[i].style.left = xFromLeft + "px";
                             currentFloorArray[i].style.display = "block";
-                            currentFloorArray[i].style.top =  yFromBottom[floor]                            
+                            currentFloorArray[i].style.top = yFromBottom[floor]
                             xFromLeft = currentFloorArray[i].offsetWidth + 10 + xFromLeft;
                         }
                     }
@@ -934,7 +929,7 @@
                 myCustomClients = JSON.parse(storedClients);
             }
 
-             myClientType = Math.floor(Math.random() * 9);
+            myClientType = Math.floor(Math.random() * 9);
             const img = document.createElement("img");
             let thisCustomClient = "customClient" + myClientType;
             console.log(thisCustomClient);
